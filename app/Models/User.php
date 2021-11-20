@@ -22,6 +22,7 @@ class User extends Authenticatable
         'email_verified_at',
         'latitude',
         'longitude',
+        'profile_picture',
         'two_factor_code',
         'two_factor_expires_at',
     ];

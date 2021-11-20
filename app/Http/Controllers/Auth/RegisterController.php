@@ -8,7 +8,7 @@ use App\Models\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-
+use App\Notifications\TwoFactorCode;
 class RegisterController extends Controller
 {
     /*
@@ -31,11 +31,6 @@ class RegisterController extends Controller
      */
     protected $redirectTo = RouteServiceProvider::HOME;
 
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
     public function __construct()
     {
         $this->middleware('guest');
@@ -57,8 +52,8 @@ class RegisterController extends Controller
             'gender' => ['required','in:male,female'],
             'lat' => ['required'],
             'long' => ['required'],
+            'picture' => ['required','image','max:10000'],
         ]);
-
     }
 
     /**
@@ -69,16 +64,29 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        return User::create([
+        $request = app('request');
+        if($request->hasfile('picture')){
+            $picture = $request->file('picture');
+            $filename = time() . '.' . $picture->getClientOriginalExtension();
+            $picture->move(public_path('/uploads/pictures/'),$filename);
+        }
+        $user = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
             'date_of_birth' => $data['dob'],
             'gender' => $data['gender'],
+            'profile_picture' => 'uploads/pictures/'.$filename,
             'latitude' => $data['lat'],
             'longitude' => $data['long'],
         ]);
 
-        
+        $user->generateTwoFactorCode();
+        try {
+            $user->notify(new TwoFactorCode());
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+        return $user;
     }
 }

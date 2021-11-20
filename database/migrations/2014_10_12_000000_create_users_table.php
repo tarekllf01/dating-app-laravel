@@ -20,6 +20,7 @@ class CreateUsersTable extends Migration
             $table->date('date_of_birth');
             $table->decimal('latitude', 10, 8);
             $table->decimal('longitude', 11, 8);
+            $table->string('profile_picture');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');

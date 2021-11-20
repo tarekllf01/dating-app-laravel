@@ -13,7 +13,7 @@ class TwoFactorController extends Controller
         $this->middleware(['auth', 'twofactor']);
     }
 
-    public function index() 
+    public function index()
     {
         return view('auth.two-factor');
     }
@@ -29,7 +29,6 @@ class TwoFactorController extends Controller
         if($request->input('two_factor_code') == $user->two_factor_code)
         {
             $user->resetTwoFactorCode();
-
             return redirect()->route('home');
         }
 
@@ -40,8 +39,11 @@ class TwoFactorController extends Controller
     {
         $user = auth()->user();
         $user->generateTwoFactorCode();
-        $user->notify(new TwoFactorCode());
-
+        try {
+            $user->notify(new TwoFactorCode());
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
         return redirect()->back()->withMessage('The two factor code has been sent again');
     }
 }

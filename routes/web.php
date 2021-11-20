@@ -13,10 +13,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
+Route::get('/', [App\Http\Controllers\HomeController::class, 'index']);
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/nearest-friends',[App\Http\Controllers\HomeController::class, 'nearestFriends'])->name('nearestFriends');
+Route::get('/submit-interest/{id}/{value}',[\App\Http\Controllers\HomeController::class,'submitInterest'])->name('submitInterest');
+Route::get('/map/{user}',[\App\Http\Controllers\HomeController::class,'map'])->name('map');
 ROute::prefix('/verify')->name('verify.')->group(function(){
     Route::get('/', [App\Http\Controllers\Auth\TwoFactorController::class,'index'])->name('index');
     Route::post('/', [App\Http\Controllers\Auth\TwoFactorController::class,'store'])->name('store');
@@ -24,6 +25,5 @@ ROute::prefix('/verify')->name('verify.')->group(function(){
     Route::get('/resend', [App\Http\Controllers\Auth\TwoFactorController::class,'resend'])->name('resend');
 });
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 Auth::routes();
