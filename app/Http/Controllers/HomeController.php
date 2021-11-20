@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Message;
 use App\Models\User;
 use App\Models\UserInterest;
 use Illuminate\Http\Request;
@@ -113,7 +114,51 @@ class HomeController extends Controller
 
     public function chat (User $user)
     {
+        $data['user'] = $user;
+        $selfId = Auth::id();
+        $userId = $user->id;
         
+        $data['chats'] = Message::select('*')
+                        ->where(function($query) use ($userId,$selfId) {
+                            $query->where('sender_id',$userId)
+                                ->where('receiver_id',$selfId);
+                        })
+                        ->orWhere(function ($query) use ($userId,$selfId) {
+                            $query->where('sender_id',$selfId)
+                                ->where('receiver_id',$userId);
+                        })
+                        ->orderBy('created_at','asc')
+                        ->get();
+                       
+        
+                                    
+        // dd($data);
+        return view('chat',$data);
+    }
+
+    public function sendMessage (User $user, Request $request)
+    {
+        if ($request->hasAny('message') && $request->message != "") {
+            $newMsg = new Message;
+            $newMsg->sender_id = Auth::id();
+            $newMsg->receiver_id = $user->id;
+            $newMsg->message = $request->message;
+            $newMsg->save();
+        }
+        return back();
+    }
+
+    public function getLatestMessage (User $user,$lastID)
+    {
+        $selfId = Auth::id();
+        $userId = $user->id;
+        $chats= Message::select('*')
+                                ->where('sender_id',$user->id)
+                                ->where('receiver_id',Auth::id())
+                                ->where('id','>',$lastID)
+                                ->orderBy('created_at','asc')
+                                ->get();
+        return $chats;
     }
 
     public function getNearesFriendsByLocation ($lat,$long,$minDistance=3.10686,$userIDExcept=null,$gender=null)

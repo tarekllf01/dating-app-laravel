@@ -19,6 +19,8 @@ Route::get('/nearest-friends',[App\Http\Controllers\HomeController::class, 'near
 Route::get('/submit-interest/{id}/{value}',[\App\Http\Controllers\HomeController::class,'submitInterest'])->name('submitInterest');
 Route::get('/map/{user}',[\App\Http\Controllers\HomeController::class,'map'])->name('map');
 Route::get('/chat/{user}',[\App\Http\Controllers\HomeController::class,'chat'])->name('chat');
+Route::post('/send-message/{user}',[\App\Http\Controllers\HomeController::class,'sendMessage'])->name('sendMessage');
+Route::get('/get-latest-message/{user}/{id}',[\App\Http\Controllers\HomeController::class,'getLatestMessage'])->name('getLatestMessage');
 
 ROute::prefix('/verify')->name('verify.')->group(function(){
     Route::get('/', [App\Http\Controllers\Auth\TwoFactorController::class,'index'])->name('index');
