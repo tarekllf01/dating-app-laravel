@@ -93,7 +93,7 @@
                                         </td>
                                         <td>
                                             <a target="blank" href="{{$baseMapUrl.$user->latitude.','.$user->longitude}}" class="btn btn-sm btn-info">Google map </a>
-                                            <a href="{{route('map',$user->id)}}" class="btn btn-sm btn-danger"> Location </a>
+                                            {{-- <a href="{{route('map',$user->id)}}" class="btn btn-sm btn-danger"> Location </a> --}}
                                             <a href="{{route('chat',$user->id)}}" class="btn btn-sm btn-success">Chat</a>
                                         </td>
                                     </tr>
