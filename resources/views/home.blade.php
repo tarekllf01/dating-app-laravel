@@ -29,7 +29,7 @@
                                     <th>Picture</th>
                                     <th>Email</th>
                                     <th>Gender</th>
-                                    <th>Date of birth</th>
+                                    <th>Age</th>
                                     <th>Interest</th>
                                 </tr>
                             </thead>
@@ -43,14 +43,14 @@
                                         </td>
                                         <td>{{$user->email??''}}</td>
                                         <td>{{$user->gender??''}}</td>
-                                        <td>{{\Carbon\Carbon::parse($user->date_of_birth)->format('d/m/Y')??''}}</td>
+                                        <td>{{$user->age??0}} Years</td>
                                         <td>
                                             <a href="{{route('submitInterest',[$user->id,1])}}" class="btn btn-sm btn-success">Like </a>
                                             <a href="{{route('submitInterest',[$user->id,0])}}" class="btn btn-sm btn-danger">Dislike </a>
                                         </td>
                                     </tr>
                                 @empty
-                                    No new friends exits which you may interest on
+                                    You already given feedback for all,No new user found.
                                 @endforelse
                             </tbody>
                         </table>

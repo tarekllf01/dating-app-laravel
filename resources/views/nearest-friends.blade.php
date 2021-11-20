@@ -26,7 +26,7 @@
                         <form action="{{route('nearestFriends')}}" method="get">
                             <input id="lat" type="hidden" name="lat"  value="{{$request['lat']??''}}" required>
                             <input id="long" type="hidden" name="long"  value="{{$request['long']??''}}" required>
-                        
+
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-group">
@@ -57,7 +57,7 @@
                                     </button>
                                 </div>
                             </div>
-                        
+
                         </form>
 
                         <table class="table table-responsive w-100">
@@ -67,7 +67,7 @@
                                     <th>Picture</th>
                                     <th>Email</th>
                                     <th>Gender</th>
-                                    <th>Date of birth</th>
+                                    <th>Age</th>
                                     <th>Distance</th>
                                     <th style="min-width: 130px">Action</th>
                                 </tr>
@@ -85,15 +85,16 @@
                                         </td>
                                         <td>{{$user->email??''}}</td>
                                         <td>{{$user->gender??''}}</td>
-                                        <td>{{\Carbon\Carbon::parse($user->date_of_birth)->format('d/m/Y')??''}}</td>
+                                        <td>{{$user->age??0}} Years</td>
                                         <td>
                                             <span class="badge badge-info">
-                                                {{round($user->distance,2)}} KM
+                                                {{round(($user->distance/0.621371)*100,2)}} KM
                                             </span>
                                         </td>
                                         <td>
                                             <a target="blank" href="{{$baseMapUrl.$user->latitude.','.$user->longitude}}" class="btn btn-sm btn-info">Google map </a>
-                                            <a href="{{route('map',$user->id)}}" class="btn btn-sm btn-danger"> Location </a> 
+                                            <a href="{{route('map',$user->id)}}" class="btn btn-sm btn-danger"> Location </a>
+                                            <a href="{{route('chat',$user->id)}}" class="btn btn-sm btn-success">Chat</a>
                                         </td>
                                     </tr>
                                 @empty
@@ -114,7 +115,7 @@
 <button type="button" id="exampleButton" class="btn btn-primary d-none" data-bs-toggle="modal" data-bs-target="#exampleModal">
     Launch demo modal
   </button>
-  
+
     @if (session('matched') && session('matched') == 1)
         <!-- Modal -->
     <div class="modal fade  " id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" >
@@ -125,7 +126,7 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                
+
             </div>
             <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

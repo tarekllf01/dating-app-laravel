@@ -36,7 +36,7 @@ class HomeController extends Controller
                             ->select($userTable.'.*','interest.submitted_for_id','interest.is_interested')
                             ->where('interest.submitted_for_id',NULL)
                             ->get();
-        
+
         return view('home',$data);
     }
 
@@ -67,7 +67,7 @@ class HomeController extends Controller
             'message' => 'Interest submitted!!',
             'alertType' => 'success',
         ]);
-        
+
     }
 
 
@@ -82,7 +82,7 @@ class HomeController extends Controller
             $long = Auth::user()->longitude;
         }
         if ($request->hasAny('distance') && $request->distance > 0) {
-            $minDistance = (float)$request->distance;
+            $minDistance = (int)$request->distance;
         } else {
             $minDistance =5;
         }
@@ -98,7 +98,7 @@ class HomeController extends Controller
         $data['long'] = $long;
         $data['gender'] = $gender;
 
-        $data['users'] = $this->getNearesFriendsByLocation($lat,$long,$minDistance,Auth::id(),$gender);
+        $data['users'] = $this->getNearesFriendsByLocation($lat,$long,$this->kmToDistanceUnite($minDistance),Auth::id(),$gender);
         $data['request'] = $request->all();
         return view('nearest-friends',$data);
 
@@ -111,9 +111,13 @@ class HomeController extends Controller
         return view('map',$data);
     }
 
-    public function getNearesFriendsByLocation ($lat,$long,$minDistance=5,$userIDExcept=null,$gender=null)
+    public function chat (User $user)
     {
         
+    }
+
+    public function getNearesFriendsByLocation ($lat,$long,$minDistance=3.10686,$userIDExcept=null,$gender=null)
+    {
         return User::select('*')
                     ->when($userIDExcept, function($query, $userIDExcept){
                         return $query->where('id','!=',$userIDExcept);
@@ -122,12 +126,21 @@ class HomeController extends Controller
                         return $query->where('gender',$gender);
                     })
                     ->addSelect(DB::raw("ST_Distance(
-                        POINT('$long', '$lat'), POINT(longitude, latitude)
-                    ) as distance"))
+                        POINT('$long', '$lat'), POINT(longitude, latitude)) as distance"))
                     ->having('distance','<=',$minDistance)
                     ->orderBy('distance')
                     ->get();
-        
+
+    }
+
+
+    private function kmToDistanceUnite ($distanceInKM)
+    {
+        return round(($distanceInKM * 0.621371)/100,5);
+    }
+    private function distanceUniteToKM ($distanceInDistanceUnite)
+    {
+        return round(($distanceInDistanceUnite/0.621371)*100,2);
     }
 
 

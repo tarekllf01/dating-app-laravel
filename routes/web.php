@@ -18,6 +18,8 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 Route::get('/nearest-friends',[App\Http\Controllers\HomeController::class, 'nearestFriends'])->name('nearestFriends');
 Route::get('/submit-interest/{id}/{value}',[\App\Http\Controllers\HomeController::class,'submitInterest'])->name('submitInterest');
 Route::get('/map/{user}',[\App\Http\Controllers\HomeController::class,'map'])->name('map');
+Route::get('/chat/{user}',[\App\Http\Controllers\HomeController::class,'chat'])->name('chat');
+
 ROute::prefix('/verify')->name('verify.')->group(function(){
     Route::get('/', [App\Http\Controllers\Auth\TwoFactorController::class,'index'])->name('index');
     Route::post('/', [App\Http\Controllers\Auth\TwoFactorController::class,'store'])->name('store');
