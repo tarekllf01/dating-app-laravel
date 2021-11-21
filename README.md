@@ -36,7 +36,7 @@ It's a demo dating basic application where these features are listed
  
     php artisan migrate
 
--Step 5 Alternative: DB file is attached in database directory manually can be imported from this DB file
+- Step 5 Alternative: DB file is attached in database directory manually can be imported from this DB file
 
 
 - Step 6: Enter command
